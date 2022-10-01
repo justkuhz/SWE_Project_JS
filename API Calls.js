@@ -1,8 +1,14 @@
 
-const userAction = async () => {
-    const riotKey = ();
-    const response = await fetch ('https://na1.api.riotgames.com/lol/platform/v3/champion-rotations?api_key=' + riotKey);
-    const myJson = await response.json()
-    // do something with the myJson
-    console.log(myJson);
+const riotKey = '';
+const sp = '%20';
+const fetch = require("node-fetch");
+
+async function getMatchList(accID, champID, queue, endTime, beginTime, endIndex, beginIndex){
+    //link building
+    let link = 'https://nai.api.riotgames.com/lol/match/v5/matchlists/by-account/' + await accId + '?';
+    if(champID != null)
+        link+= 'champion=' + champID + '&';
+    if(queue != null)
+        link+= 'queue=' + queue + '&';
+    
 }
