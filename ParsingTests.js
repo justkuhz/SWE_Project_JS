@@ -1,6 +1,6 @@
 import fetch from 'node-fetch';
 
-const riotKey = 'RGAPI-fcc2bf5c-f558-4d5f-9f66-bd5bc16f7890';
+const riotKey = '';
 
 async function getNAChallengers(){
     // set up api call

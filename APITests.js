@@ -1,5 +1,5 @@
 import fetch from 'node-fetch';
-const riotKey = 'RGAPI-fcc2bf5c-f558-4d5f-9f66-bd5bc16f7890';
+const riotKey = '';
 //const fetch = require("node-fetch")
  
 var summonerName = 'Kaii99';
