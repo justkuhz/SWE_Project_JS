@@ -1,6 +1,6 @@
 import fetch from 'node-fetch';
 
-const riotKey = 'RGAPI-aeb691b1-d1c9-45b9-9b82-a0b8b3b3bcea';
+const riotKey = '';
 
 async function getNAChallengers() { //return all summoner names from challenger players
     // set up api call
