@@ -1,7 +1,6 @@
 import fetch from 'node-fetch';
 
-const riotKey = 'RGAPI-dd88d134-3a3f-40dc-86bf-583717d3cc00';
-const kuhzPuuid = '8dAdmQKVX-1QZLgE_OS0AY9XTi2FG-Ogg2mf1NHg1H6Yb739u1tGSTFrkiVZJ6Jw0wfZY7Hzt5cBrA';
+const riotKey = '';
 
 async function getNAChallengers() { //return all summoner names from challenger players
     // set up api call
