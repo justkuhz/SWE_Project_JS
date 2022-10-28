@@ -2,6 +2,11 @@ import fetch from 'node-fetch';
 
 const riotKey = '';
 
+function challLadderElem(summonerName, points) {
+    this.summonerName = summonerName;
+    this.points = points;
+}
+
 async function getNAChallengers() { //return all summoner names from challenger players
     // set up api call
     let APICallString = 'https://na1.api.riotgames.com/lol/league-exp/v4/entries/RANKED_SOLO_5x5/CHALLENGER/I?page=1&api_key=';
@@ -13,7 +18,8 @@ async function getNAChallengers() { //return all summoner names from challenger 
     let list = [];
 
     for (var i = 0; i < response.length; i++) { // iterate through each js object and push into array
-        list[i] = response[i].summonerName;
+        var user = new challLadderElem(response[i].summonerName, response[i].leaguePoints);
+        list.push(user);
     }
 
     return list;
@@ -198,6 +204,9 @@ async function parseMatchData(matchID) {
 
 (async () => {
 
+    /*
+    //example of how we use getSummonerRankInfo:
+
     let rankedData;
     var promise = getSummonerRankInfo('Everglowing').then(
         function(data) {rankedData = data; console.log('got ranked data for everglowing')},
@@ -207,7 +216,7 @@ async function parseMatchData(matchID) {
     console.log(rankedData);
 
 
-    /*
+    
     //example of how we use parseMatchData:
     
     let match;
@@ -218,16 +227,18 @@ async function parseMatchData(matchID) {
     await promise;
     console.log(match);
 
+    
+
     // example of how we use getNAChallengers():
     let challSummonerNames = [];
     var promise = getNAChallengers().then(
-        function(data)  {challSummonerNames = data; console.log('successfully pushed chall name list')},
+        function(data)  {challSummonerNames = data; console.log('successfully pulled chall name list')},
         function(error) {console.log('error in calling chall summNames')}
     );
     await promise;
-    // at this point js var "challSummonerNames" holds all challenger summonerNames
-    // console.log(challSummonerNames);
+    console.log(challSummonerNames);
 
+    
     // example of how we use retrievePUUID() function: 
     const name = 'Kuhz';
     var puuid = '';
