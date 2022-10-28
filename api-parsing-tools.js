@@ -1,6 +1,7 @@
 import fetch from 'node-fetch';
 
-const riotKey = '';
+const riotKey = 'RGAPI-dd88d134-3a3f-40dc-86bf-583717d3cc00';
+const kuhzPuuid = '8dAdmQKVX-1QZLgE_OS0AY9XTi2FG-Ogg2mf1NHg1H6Yb739u1tGSTFrkiVZJ6Jw0wfZY7Hzt5cBrA';
 
 async function getNAChallengers() { //return all summoner names from challenger players
     // set up api call
@@ -78,11 +79,100 @@ async function getSummonerName(puuid) { // given a users puuid, return the usern
     return response.name;
 }
 
-async function getParticipants(matchID) {
-// participants are displayed as blue side players first then red side players in champion select order
+function Player(name, puuid, champId, team, damage, gold, kills, deaths, assists, ctrlWards,
+    regWards, items, creepScore, csPerMin, gameWon) {
+        this.summonerName = name;
+        this.puuid = puuid;
+        this.championId = champId;
+        this.team = team;
+        this.damageToChamps = damage;
+        this.gold = gold;
+        this.kills = kills;
+        this.deaths = deaths;
+        this.assists = assists;
+        this.controlWards = ctrlWards;
+        this.regWards = regWards;
+        this.items = items;
+        this.creepScore = creepScore;
+        this.csPerMin = csPerMin;
+        this.gameWon = gameWon;
+    }
+
+function MatchInfo(queueId, gameDuration, blueBans, redBans, players, teamWon) {
+    this.queue = getMatchMode(queueId);
+    this.gameDuration = time(gameDuration);
+    this.blueBans = blueBans;
+    this.redBans = redBans;
+    this.players = players; // use players.side to see what team/side they are on
+    this.teamWon = teamWon;
+}
+
+function time(duration) {
+    var time = Math.round(duration / 60) + 'm ' + duration % 60 + 's';
+    return time;
+}
+
+/* important things to note here: champions and items will be stored in their Id numbers for front-end usage
+* to match images. I do not think it is worth manually writing out/assigning string names for each id (too many man....)
+*/
+async function parseMatchData(matchID) {
+    let APICallString = 'https://americas.api.riotgames.com/lol/match/v5/matches/' + matchID + '?api_key=' + riotKey;
+    let response = await fetch(APICallString);
+    response = await response.json();
+    //console.log(response);
+
+    let players = [];
+    var gameMinutes = response.info.gameDuration / 60;
+
+    for (var i = 0; i < response.info.participants.length; i++) {
+        var elem = response.info.participants[i];
+
+        var team = '';
+        if (elem.teamId == 100) team = 'blue';
+        else team = 'red';
+
+        var items = [elem.item0, elem.item1, elem.item2, elem.item3, elem.item4, elem.item5, elem.item6];
+        var cs = elem.totalMinionsKilled + elem.neutralMinionsKilled;
+
+        var player =  new Player(elem.summonerName, elem.puuid, elem.championId, team, elem.totalDamageDealtToChampions,
+            elem.goldEarned, elem.kills, elem.deaths, elem.assists, elem.visionWardsBoughtInGame, elem.wardsPlaced,
+            items, cs, Math.round(cs / gameMinutes * 10) / 10, elem.win);
+        
+        players.push(player);
+    }
+
+    let sideWon = '';
+    if (players && players[0].team == 'blue' && players[0].win == true) sideWon = 'blue';
+    else if (players.length == 10 && response.info.gameDuration < 420) sideWon = 'remake';
+    else sideWon = 'red';
+
+    let blueBans = [];
+    let redBans = [];
+    elem = response.info.teams;
+    for (var i = 0; i < elem[0].bans.length; i++) {
+        blueBans.push(elem[0].bans[i].championId);
+    }
+    for (var j = 0; j < elem[1].bans.length; j++) {
+        redBans.push(elem[1].bans[j].championId);
+    }
+
+    var match = new MatchInfo(response.info.queueId, response.info.gameDuration, blueBans,
+        redBans, players, sideWon);
+
+    return match;
 }
 
 (async () => {
+
+    //example of how we use parseMatchData:
+    let match;
+    var promise = parseMatchData('NA1_4476492203').then(
+        function(data) {match = data; console.log('we got the match data')},
+        function(error) {console.log('error in getting match data')}
+    );
+    await promise;
+    console.log(match);
+    /*
     // example of how we use getNAChallengers():
     let challSummonerNames = [];
     var promise = getNAChallengers().then(
@@ -112,7 +202,7 @@ async function getParticipants(matchID) {
     );
     await promise;
     // at this point the matchHistory array should hold the 1-100 most recent match IDs for the puuid provided
-    //console.log(matchHistory);
+    console.log(matchHistory);
 
     // example of getSummonerName
     let testName = '';
@@ -123,4 +213,6 @@ async function getParticipants(matchID) {
     await promise;
     // testName holds 'Kuhz'
     //console.log(testName);
+    */
+
     })();
