@@ -25,6 +25,8 @@ async function retrievePUUID(summonerName) { // retrieve a puuid given a summone
     let response = await fetch(APICallString);
     response = await response.json();
 
+    console.log(response.puuid);
+
     return response.puuid;
 }
 
@@ -111,6 +113,39 @@ function time(duration) {
     return time;
 }
 
+// getSummonerId and getSummonerDetails work in tandem to retrieve ranked information for
+// a given user's summoner name
+async function getSummonerId(summonerName) {
+    let APICallString = 'https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/' + await retrievePUUID(summonerName) + '?api_key=' + riotKey;
+    let response = await fetch(APICallString);
+    response = await response.json();
+    console.log(response.id);
+    return response.id;
+}
+
+function Rank(queueType, tier, rank, points, wins, loss) {
+    this.queueType = queueType;
+    this.tier = tier;
+    this.rank = rank;
+    this.points = points;
+    this.wins = wins;
+    this.loss = loss;
+}
+
+async function getSummonerRankInfo(summonerName) {
+    let APICallString = 'https://na1.api.riotgames.com/lol/league/v4/entries/by-summoner/' + await getSummonerId(summonerName) + '?api_key=' + riotKey;
+    let response = await fetch(APICallString);
+    response = await response.json();
+    let ranked = [];
+    for (var i = 0; i < response.length; i++) {
+        var elem = response[i];
+        var rank = new Rank(elem.queueType, elem.tier, elem.rank, elem.leaguePoints,
+            elem.wins, elem.losses);
+        ranked.push(rank);
+    }
+    return ranked;
+}
+
 /* important things to note here: champions and items will be stored in their Id numbers for front-end usage
 * to match images. I do not think it is worth manually writing out/assigning string names for each id (too many man....)
 */
@@ -163,7 +198,18 @@ async function parseMatchData(matchID) {
 
 (async () => {
 
+    let rankedData;
+    var promise = getSummonerRankInfo('Everglowing').then(
+        function(data) {rankedData = data; console.log('got ranked data for everglowing')},
+        function(error) {console.log('error in pulling ranked data')}
+    );
+    await promise;
+    console.log(rankedData);
+
+
+    /*
     //example of how we use parseMatchData:
+    
     let match;
     var promise = parseMatchData('NA1_4476492203').then(
         function(data) {match = data; console.log('we got the match data')},
@@ -171,7 +217,7 @@ async function parseMatchData(matchID) {
     );
     await promise;
     console.log(match);
-    /*
+
     // example of how we use getNAChallengers():
     let challSummonerNames = [];
     var promise = getNAChallengers().then(
