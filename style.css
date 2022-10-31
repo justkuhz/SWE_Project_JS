@@ -1,0 +1,82 @@
+.topHeader {
+    position: absolute;
+    font-size: 5vw;
+    left: 40vw;
+}
+
+.summonerName {
+    position: absolute;
+    font-size: 2.5vw;
+    left: 0;
+    top: 0;
+    text-align: center;
+}
+
+.rankImage {
+    position: absolute;
+    left: 3vw;
+    top: 2.5vw;
+    height: 10vw;
+    width: auto;
+}
+
+.LPDisplay {
+    position: absolute;
+    top: 12vw;
+    left: 0vw;
+    font-size: 2.5vw;
+}
+
+.SummonerSearch {
+    position: absolute;
+    top: 10vw;
+    left: 30vw;
+    width: 40vw;
+    height: 3vw;
+    font-size: 2vw;
+    text-align: center;
+}
+
+.searchButton {
+    position: absolute;
+    top: 10vw;
+    left: 70vw;
+    height: 3vw;
+}
+
+.collapsible {
+    background-color: #eee;
+    color: #444;
+    cursor: pointer;
+    padding: 18px;
+    width: 100%;
+    border: none;
+    text-align: left;
+    outline: none;
+    font-size: 15px;
+}
+
+.active,
+.collapsible:hover {
+    background-color: #ccc;
+}
+
+.collapsibleContent {
+    background-color: #f1f1f1;
+    padding: 0 18px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+}
+
+.gameCollapsibleHolder1 {
+    position: relative;
+    top: 18vw;
+    width: 100%;
+}
+
+.gameCollapsibleHolder2 {
+    position: relative;
+    top: 19vw;
+    width: 100%;
+}

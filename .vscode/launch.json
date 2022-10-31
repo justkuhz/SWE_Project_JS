@@ -17,6 +17,7 @@
         {
             "type": "chrome",
             "request": "launch",
+            "port": 8800,
             "name": "Launch Chrome against localhost",
             "url": "http://localhost:8800",
             "webRoot": "${workspaceFolder}"
