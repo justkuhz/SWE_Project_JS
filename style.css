@@ -80,3 +80,48 @@
     top: 19vw;
     width: 100%;
 }
+
+.gameCollapsibleHolder3 {
+    position: relative;
+    top: 20vw;
+    width: 100%;
+}
+
+.gameCollapsibleHolder4 {
+    position: relative;
+    top: 21vw;
+    width: 100%;
+}
+.gameCollapsibleHolder5 {
+    position: relative;
+    top: 22vw;
+    width: 100%;
+}
+.gameCollapsibleHolder6 {
+    position: relative;
+    top: 23vw;
+    width: 100%;
+}
+.gameCollapsibleHolder7 {
+    position: relative;
+    top: 24vw;
+    width: 100%;
+}
+.gameCollapsibleHolder8 {
+    position: relative;
+    top: 25vw;
+    width: 100%;
+}
+.gameCollapsibleHolder9 {
+    position: relative;
+    top: 26vw;
+    width: 100%;
+}
+.gameCollapsibleHolder10 {
+    position: relative;
+    top: 27vw;
+    width: 100%;
+}
+.hiddenRank{
+    display: none;
+}

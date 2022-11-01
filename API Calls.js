@@ -1,5 +1,5 @@
 
-const riotKey = '';
+const riotKey = 'RGAPI-5590e97c-1eef-41f8-824a-7389cf4cfebc';
 const sp = '%20';
 const fetch = require("node-fetch");
 

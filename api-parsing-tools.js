@@ -1,10 +1,65 @@
-import fetch from 'node-fetch';
-
-const riotKey = '';
+const riotKey = 'RGAPI-5590e97c-1eef-41f8-824a-7389cf4cfebc';
 
 function challLadderElem(summonerName, points) {
     this.summonerName = summonerName;
     this.points = points;
+}
+
+async function test() {
+    var summonerName = "test";
+    let ppuid = "test";
+    summonerName = document.getElementById("4").value;
+    ppuid = await retrievePUUID(summonerName);
+    document.getElementById("1").innerHTML = summonerName;
+    let player = [];
+    player = await getSummonerRankInfo(summonerName);
+    switch (player[0].tier) {
+        case "CHALLENGER":
+            document.getElementById("2").src = "Resources\\Emblem_Challenger.png";
+            break;
+        case "GRANDMASTER":
+            document.getElementById("2").src = "Resources\\Emblem_Grandmaster.png";
+            break;
+        case "MASTER":
+            document.getElementById("2").src = "Resources\\Emblem_Master.png";
+            break;
+        case "DIAMOND":
+            document.getElementById("2").src = "Resources\\Emblem_DIAMOND.png";
+            break;
+        case "PLATINUM":
+            document.getElementById("2").src = "Resources\\Emblem_Platinum.png";
+            break;
+        case "GOLD":
+            document.getElementById("2").src = "Resources\\Emblem_Gold.png";
+            break;
+        case "SILVER":
+            document.getElementById("2").src = "Resources\\Emblem_Silver.png";
+            break;
+        case "BRONZE":
+            document.getElementById("2").src = "Resources\\Emblem_Bronze.png";
+            break;
+        case "IRON":
+            document.getElementById("2").src = "Resources\\Emblem_Iron.png";
+            break;
+        default:
+    }
+    document.getElementById("3").innerHTML = player[0].tier + " " + player[0].rank + " " + player[0].points;
+    let matchIDs = [];
+    matchIDs = await getMatchHistory(ppuid, 10);
+    let matchinfo = [];
+    for (var j = 0; j < 10; j++) {
+        matchinfo = await parseMatchData(matchIDs[j]);
+        for (var i = 0; i < 10; i++) {
+            if (matchinfo.players[i].puuid === ppuid) {
+                if (matchinfo.players[i].gameWon) {
+                    document.getElementById((j+5).toString()).innerHTML = matchinfo.gameDuration + " " + matchinfo.queue + " WON";
+                }
+                else {
+                    document.getElementById((j+5).toString()).innerHTML = matchinfo.gameDuration + " " + matchinfo.queue + " LOST";
+                }
+            }
+        }
+    }
 }
 
 async function getNAChallengers() { //return all summoner names from challenger players
@@ -55,26 +110,26 @@ async function getMatchHistory(summonerPUUID, n) { // return list of match IDs f
 function getMatchMode(queueId) { // given a queueId from match data, returns the name of the queue type
     let queueType = '';
 
-        switch(queueId) {
-            case 450: 
-                queueType = 'ARAM'; break;
-            case 830: 
-            case 840:
-            case 850:
-                queueType = 'Bots'; break;
-            case 700:
-                queueType = 'Clash'; break;
-            case 400:
-            case 430:
-                queueType = 'Normals'; break;
-            case 420:
-                queueType = 'Ranked Solo'; break;
-            case 440: 
-                queueType = 'Ranked 5:5 Flex'; break;
-            case 0:
-                queueType = 'Custom Game'; break;
-            default: console.log('undefined queue type at game ' + i + ' of match history'); break;
-        }
+    switch (queueId) {
+        case 450:
+            queueType = 'ARAM'; break;
+        case 830:
+        case 840:
+        case 850:
+            queueType = 'Bots'; break;
+        case 700:
+            queueType = 'Clash'; break;
+        case 400:
+        case 430:
+            queueType = 'Normals'; break;
+        case 420:
+            queueType = 'Ranked Solo'; break;
+        case 440:
+            queueType = 'Ranked 5:5 Flex'; break;
+        case 0:
+            queueType = 'Custom Game'; break;
+        default: console.log('undefined queue type at game ' + i + ' of match history'); break;
+    }
 
     return queueType;
 }
@@ -88,22 +143,22 @@ async function getSummonerName(puuid) { // given a users puuid, return the usern
 
 function Player(name, puuid, champId, team, damage, gold, kills, deaths, assists, ctrlWards,
     regWards, items, creepScore, csPerMin, gameWon) {
-        this.summonerName = name;
-        this.puuid = puuid;
-        this.championId = champId;
-        this.team = team;
-        this.damageToChamps = damage;
-        this.gold = gold;
-        this.kills = kills;
-        this.deaths = deaths;
-        this.assists = assists;
-        this.controlWards = ctrlWards;
-        this.regWards = regWards;
-        this.items = items;
-        this.creepScore = creepScore;
-        this.csPerMin = csPerMin;
-        this.gameWon = gameWon;
-    }
+    this.summonerName = name;
+    this.puuid = puuid;
+    this.championId = champId;
+    this.team = team;
+    this.damageToChamps = damage;
+    this.gold = gold;
+    this.kills = kills;
+    this.deaths = deaths;
+    this.assists = assists;
+    this.controlWards = ctrlWards;
+    this.regWards = regWards;
+    this.items = items;
+    this.creepScore = creepScore;
+    this.csPerMin = csPerMin;
+    this.gameWon = gameWon;
+}
 
 function MatchInfo(queueId, gameDuration, blueBans, redBans, players, teamWon) {
     this.queue = getMatchMode(queueId);
@@ -174,10 +229,10 @@ async function parseMatchData(matchID) {
         var items = [elem.item0, elem.item1, elem.item2, elem.item3, elem.item4, elem.item5, elem.item6];
         var cs = elem.totalMinionsKilled + elem.neutralMinionsKilled;
 
-        var player =  new Player(elem.summonerName, elem.puuid, elem.championId, team, elem.totalDamageDealtToChampions,
+        var player = new Player(elem.summonerName, elem.puuid, elem.championId, team, elem.totalDamageDealtToChampions,
             elem.goldEarned, elem.kills, elem.deaths, elem.assists, elem.visionWardsBoughtInGame, elem.wardsPlaced,
             items, cs, Math.round(cs / gameMinutes * 10) / 10, elem.win);
-        
+
         players.push(player);
     }
 
@@ -271,4 +326,4 @@ async function parseMatchData(matchID) {
     //console.log(testName);
     */
 
-    })();
+})();
