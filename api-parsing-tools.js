@@ -1,4 +1,4 @@
-const riotKey = 'RGAPI-5590e97c-1eef-41f8-824a-7389cf4cfebc';
+const riotKey = 'RGAPI-405d2658-0116-4c67-8dc6-61944946ed47';
 
 function challLadderElem(summonerName, points) {
     this.summonerName = summonerName;
@@ -13,7 +13,13 @@ async function test() {
     document.getElementById("1").innerHTML = summonerName;
     let player = [];
     player = await getSummonerRankInfo(summonerName);
-    switch (player[0].tier) {
+    var soloqRankInt;
+    for(var j = 0; j < player.length; j++){
+        if(player[j].queueType === 'RANKED_SOLO_5x5'){
+            soloqRankInt = j;
+        }
+    }
+    switch (player[soloqRankInt].tier) {
         case "CHALLENGER":
             document.getElementById("2").src = "Resources\\Emblem_Challenger.png";
             break;
@@ -43,7 +49,7 @@ async function test() {
             break;
         default:
     }
-    document.getElementById("3").innerHTML = player[0].tier + " " + player[0].rank + " " + player[0].points;
+    document.getElementById("3").innerHTML = player[soloqRankInt].tier + " " + player[soloqRankInt].rank + " " + player[soloqRankInt].points;
     let matchIDs = [];
     matchIDs = await getMatchHistory(ppuid, 10);
     let matchinfo = [];
@@ -52,7 +58,8 @@ async function test() {
         for (var i = 0; i < 10; i++) {
             if (matchinfo.players[i].puuid === ppuid) {
                 if (matchinfo.players[i].gameWon) {
-                    document.getElementById((j+5).toString()).innerHTML = matchinfo.gameDuration + " " + matchinfo.queue + " WON";
+                    document.getElementById((j+5).toString()).innerHTML = "Win" + " " + matchinfo.queue + " " + matchinfo.gameDuration + " " + 
+                    matchinfo.players[i].championId + " " + matchinfo.players[i].creepScore;
                 }
                 else {
                     document.getElementById((j+5).toString()).innerHTML = matchinfo.gameDuration + " " + matchinfo.queue + " LOST";
