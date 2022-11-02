@@ -14,8 +14,8 @@ async function test() {
     let player = [];
     player = await getSummonerRankInfo(summonerName);
     var soloqRankInt;
-    for(var j = 0; j < player.length; j++){
-        if(player[j].queueType === 'RANKED_SOLO_5x5'){
+    for (var j = 0; j < player.length; j++) {
+        if (player[j].queueType === 'RANKED_SOLO_5x5') {
             soloqRankInt = j;
         }
     }
@@ -58,11 +58,27 @@ async function test() {
         for (var i = 0; i < 10; i++) {
             if (matchinfo.players[i].puuid === ppuid) {
                 if (matchinfo.players[i].gameWon) {
-                    document.getElementById((j+5).toString()).innerHTML = "Win" + " " + matchinfo.queue + " " + matchinfo.gameDuration + " " + 
-                    matchinfo.players[i].championId + " " + matchinfo.players[i].creepScore;
+                    document.getElementById((j + 5).toString()).innerHTML = "Win," + " " + matchinfo.queue + ", " + matchinfo.gameDuration + ", CS: " + matchinfo.players[i].creepScore;
+
+                    for (var b = 0; b < 6; b++) {
+                        if (matchinfo.players[i].items[b] == 0) {
+                            document.getElementById((b + ((j + 15) * 10)).toString()).style.display = "none";
+                        }
+                        else {
+                            document.getElementById((b + ((j + 15) * 10)).toString()).src = "Resources\\item\\" + matchinfo.players[i].items[b].toString() + ".png";
+                        }
+                    }
                 }
                 else {
-                    document.getElementById((j+5).toString()).innerHTML = matchinfo.gameDuration + " " + matchinfo.queue + " LOST";
+                    document.getElementById((j + 5).toString()).innerHTML = "Lost" + ", " + matchinfo.queue + ", " + matchinfo.gameDuration + ", CS" + matchinfo.players[i].creepScore;
+                    for (var b = 0; b < 6; b++) {
+                        if (matchinfo.players[i].items[b] == 0) {
+                            document.getElementById((b + ((j + 15) * 10)).toString()).style.display = "none";
+                        }
+                        else {
+                            document.getElementById((b + ((j + 15) * 10)).toString()).src = "Resources\\item\\" + matchinfo.players[i].items[b].toString() + ".png";
+                        }
+                    }
                 }
             }
         }
